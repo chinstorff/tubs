@@ -1,4 +1,7 @@
 tubsTables = [];
+const urlParams = new URLSearchParams(window.location.search);
+const urlSequence = urlParams.get('sequence').toUpperCase();
+const urlTempo = urlParams.get('tempo');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -16,8 +19,8 @@ PAUSE_SYMBOL = "&#9208;";
 var TubsTable = function (tableNode, sequence, tempo) {
     var tt = {
 	active: false,
-	sequence: (sequence || tableNode.getAttribute("data-tubs-sequence") || "").split(""),
-	tempo: tempo || tableNode.getAttribute("data-tubs-tempo") || 60, // bpm
+	sequence: (sequence || tableNode.getAttribute("data-tubs-sequence") || urlSequence || "").split(""),
+	tempo: tempo || tableNode.getAttribute("data-tubs-tempo") || urlTempo || 60, // bpm
 	tableNode: tableNode,
 	playButtonNode: document.createElement("BUTTON"),
 	TDs: [],
