@@ -106,7 +106,6 @@ function startMidi() {
 	},
 	onsuccess: function() {
 	    MIDI.setVolume(0, 127);
-	    tubsTables[1].play();
 	}
     });
 }
