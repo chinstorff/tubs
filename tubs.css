@@ -1,0 +1,16 @@
+.tubs, .tubs tr, .tubs td {
+    border: 1px solid black;
+}
+
+.tubs td {
+    height: 30px;
+    width: 30px;
+}
+
+.tubs button {
+    margin-top: 5px;
+}
+
+.highlighted {
+    background-color: yellow;
+}
