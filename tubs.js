@@ -1,7 +1,10 @@
 tubsTables = [];
 const urlParams = new URLSearchParams(window.location.search);
-const urlSequence = urlParams.get('sequence').toUpperCase();
-const urlTempo = urlParams.get('tempo');
+if (urlParams != null) {
+    console.log(urlParams);
+    const urlSequence = urlParams.has('sequence') ? urlParams.get('sequence').toUpperCase() : undefined;
+    const urlTempo = urlParams.has('tempo') ? urlParams.get('tempo') : undefined;
+}
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
