@@ -1,5 +1,10 @@
-.tubs, .tubs tr, .tubs td {
-    border: 1px solid black;
+.tubs {
+    border-spacing: -1px;
+    border-collapse: collapse;
+}
+
+.tubs td {
+    border: 2px solid black;
 }
 
 .tubs td {

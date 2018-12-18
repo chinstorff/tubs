@@ -1,20 +1,17 @@
 tubsTables = [];
-const urlParams = new URLSearchParams(window.location.search);
+urlParams = new URLSearchParams(window.location.search);
+var urlSequence = null;
+var urlTempo = null;
 if (urlParams != null) {
     console.log(urlParams);
-    const urlSequence = urlParams.has('sequence') ? urlParams.get('sequence').toUpperCase() : undefined;
-    const urlTempo = urlParams.has('tempo') ? urlParams.get('tempo') : undefined;
+    urlSequence = urlParams.has('sequence') ? urlParams.get('sequence').toUpperCase() : undefined;
+    urlTempo = urlParams.has('tempo') ? urlParams.get('tempo') : undefined;
 }
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-noteMap = {
-    "D": 57,
-    "T": 58,
-    "-": 0,
-}
 
 PLAY_SYMBOL  = "&#9658;";
 PAUSE_SYMBOL = "&#9208;";
@@ -22,22 +19,20 @@ PAUSE_SYMBOL = "&#9208;";
 var TubsTable = function (tableNode, sequence, tempo) {
     var tt = {
 	active: false,
-	sequence: (sequence || tableNode.getAttribute("data-tubs-sequence") || urlSequence || "").split(""),
+	voices: [],
 	tempo: tempo || tableNode.getAttribute("data-tubs-tempo") || urlTempo || 60, // bpm
+	sequenceLength: 0,
 	tableNode: tableNode,
 	playButtonNode: document.createElement("BUTTON"),
-	TDs: [],
-	highlightedIndex: 0,
 	highlightIndex: function (i) {
-	    this.TDs[this.highlightedIndex].classList.remove("highlighted");
-	    this.TDs[i].classList.add("highlighted");
-	    this.highlightedIndex = i;
+	    for (var j = 0; j < this.voices.length; j++) {
+		this.voices[j].highlightIndex(i);
+	    }
 	},
-	displayPlayButton: function () {
-
-	},
-	displayPauseButton: function () {
-
+	unHighlightIndex: function (i) {
+	    for (var j = 0; j < this.voices.length; j++) {
+		this.voices[j].TDs[i].classList.remove("highlighted");
+	    }	    
 	},
 	play: async function () {
 	    this.active = true;
@@ -47,17 +42,29 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	    var delay = 0;
 	    var velocity = 127; // how hard the note hits
 
-	    await sleep(500);
+	    for (var i = 0; i < this.voices.length; i++) {
+		if (this.voices[i].sequence.length > this.sequenceLength) {
+		    this.sequenceLength = this.voices[i].sequence.length;
+		}
+	    }
 	    
-	    var i = this.sequence.length - 1;
+	    await sleep(500);
+	    console.log(this.voices);
+	    var i = 0;
 	    while (this.active) {
-		i = (i+1) % this.sequence.length;
-		var note = noteMap[this.sequence[i]];
-		MIDI.noteOn(0, note, velocity, delay);
-		MIDI.noteOff(0, note, delay + 0.75);
+		for (var j = 0; j < this.voices.length; j++) {
+		    var voice = this.voices[j];
+		    
+		    var note = voice.getNoteId(voice.sequence[i]);
+		    console.log(voice.name + " plays a " + note);
+		    MIDI.noteOn(0, note, velocity, delay);
+		    MIDI.noteOff(0, note, delay + 0.75);
 		
-		this.highlightIndex(i);
+		    voice.highlightIndex(i);
+		}
 		await sleep(sleepDuration);
+		this.unHighlightIndex(i);
+		i = (i+1) % this.sequenceLength;
 	    }	    
 	},
 	stop: function () {
@@ -65,7 +72,10 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	    this.playButtonNode.innerHTML = PLAY_SYMBOL;
 	},
 	reset: function () {
-	    this.TDs[this.highlightedIndex].classList.remove("highlighted");
+	    for (var i = 0; i < this.voices.length; i++) {
+		this.voices[i].reset();
+	    }
+
 	    this.stop();
 	}
     }
@@ -80,18 +90,51 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	    tt.play();
 	}
     }
-    
-    var trNode = document.createElement("TR");
-    
-    trNode.appendChild(tt.playButtonNode);
-    tableNode.appendChild(trNode);
 
-    for (var i = 0; i < tt.sequence.length; i++) {
-	var tdNode = document.createElement("TD");
-	tdNode.innerHTML = tt.sequence[i];
-	tt.TDs.push(tdNode);
-	trNode.appendChild(tdNode);
+    var trNodes = tableNode.children[0].children;
+    console.log(trNodes);
+    tt.tableNode.appendChild(tt.playButtonNode);
+    
+    for (var j = 0; j < trNodes.length; j++) {
+	var trNode = trNodes[j];
+	var tubsVoice = {
+	    name: trNode.getAttribute("data-tubs-name"),
+	    sequence: trNode.getAttribute("data-tubs-sequence"),
+	    TDs: [],
+	    highlightedIndex: 0,
+	    getNoteId: function (c) {
+		var tar = {
+		    "D": 57,
+		    "T": 58,
+		    "-": 0,
+		}
+		var darbuka = {
+		    "D": 60,
+		    "T": 61,
+		    "-": 0,
+		}
+		if (this.name == "tar") return tar[c];
+		return darbuka[c];
+	    },
+	    highlightIndex: function (i) {
+		this.TDs[i].classList.add("highlighted");
+		this.highlightedIndex = i;
+	    },
+	    reset: function () {
+		this.TDs[this.highlightedIndex].classList.remove("highlighted");
+	    },
+	}
+
+	
+	for (var i = 0; i < tubsVoice.sequence.length; i++) {
+	    var tdNode = document.createElement("TD");
+	    tdNode.innerHTML = tubsVoice.sequence[i];
+	    tubsVoice.TDs.push(tdNode);
+	    trNode.appendChild(tdNode);
+	}
+	tt.voices.push(tubsVoice);
     }
+    console.log(tt.voices);
 
     return tt;
 }
