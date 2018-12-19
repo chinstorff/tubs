@@ -1,15 +1,12 @@
 .tubs {
-    border-spacing: -1px;
     border-collapse: collapse;
 }
 
 .tubs td {
     border: 2px solid black;
-}
-
-.tubs td {
-    height: 30px;
-    width: 30px;
+    padding: 5px;
+    height: 20px;
+    width: 20px;
 }
 
 .tubs button {
@@ -18,4 +15,53 @@
 
 .highlighted {
     background-color: yellow;
+}
+
+.tubs tr span {
+    margin-right: 7px;
+    margin-top: 8px;
+    float: right;
+}
+
+.tubs-div h2 {
+    margin: 2px 0px 4px 0px;
+    font-size: larger;
+    display: inline;
+}
+
+.tubs-div h3 {
+    margin: 2px 5px 4px 10px;
+    font-size: medium;
+    display: inline;
+    float: right;
+}
+
+.tubs-div button {
+    margin-top: -5px;
+    float: right;
+}
+
+.tubs-div div {
+    margin-bottom: 4px;
+}
+
+.tubs-div {
+    padding: 8px;
+    background-color: #e5e5e5;
+
+    border-radius:6px;
+    -moz-border-radius:6px;
+    display: inline-block;
+}
+
+.active {
+    background-color: #cad7e5;
+}
+
+.content {
+    margin: 0px 40px 0px 40px;
+}
+
+.nuba {
+    margin-left: 10px;
 }

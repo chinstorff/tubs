@@ -19,6 +19,7 @@ PAUSE_SYMBOL = "&#9208;";
 var TubsTable = function (tableNode, sequence, tempo) {
     var tt = {
 	active: false,
+	name: tableNode.getAttribute("data-tubs-name") || "Untitled",
 	voices: [],
 	tempo: tempo || tableNode.getAttribute("data-tubs-tempo") || urlTempo || 60, // bpm
 	sequenceLength: 0,
@@ -36,6 +37,7 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	},
 	play: async function () {
 	    this.active = true;
+	    this.tableNode.parentNode.classList.add("active");
 	    this.playButtonNode.innerHTML = PAUSE_SYMBOL;
 	    
 	    var sleepDuration = 1000 / (this.tempo / 60);
@@ -69,6 +71,7 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	},
 	stop: function () {
 	    this.active = false;
+	    this.tableNode.parentNode.classList.remove("active");
 	    this.playButtonNode.innerHTML = PLAY_SYMBOL;
 	},
 	reset: function () {
@@ -90,10 +93,7 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	    tt.play();
 	}
     }
-
     var trNodes = tableNode.children[0].children;
-    console.log(trNodes);
-    tt.tableNode.appendChild(tt.playButtonNode);
     
     for (var j = 0; j < trNodes.length; j++) {
 	var trNode = trNodes[j];
@@ -125,7 +125,9 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	    },
 	}
 
-	
+	var voiceNameNode = document.createElement("SPAN");
+	voiceNameNode.innerHTML = tubsVoice.name;
+	trNode.appendChild(voiceNameNode);
 	for (var i = 0; i < tubsVoice.sequence.length; i++) {
 	    var tdNode = document.createElement("TD");
 	    tdNode.innerHTML = tubsVoice.sequence[i];
@@ -134,7 +136,21 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	}
 	tt.voices.push(tubsVoice);
     }
-    console.log(tt.voices);
+
+    var headerDiv = document.createElement("DIV");
+    var titleNode = document.createElement("H2");
+    var tempoNode = document.createElement("H3");
+    titleNode.innerText = tt.name;
+    tempoNode.innerText = tt.tempo + "bpm";
+    headerDiv.appendChild(titleNode);
+    headerDiv.appendChild(tt.playButtonNode);
+    headerDiv.appendChild(tempoNode);
+    
+    var tableDiv = document.createElement("DIV");
+    tableDiv.classList.add("tubs-div");
+    tableDiv.appendChild(headerDiv);
+    tt.tableNode.parentNode.insertBefore(tableDiv, tt.tableNode);
+    tableDiv.appendChild(tt.tableNode);
 
     return tt;
 }
