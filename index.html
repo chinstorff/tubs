@@ -14,14 +14,90 @@
   <body>
 
     <div class="content">
-      <h3>Nūba</h3>
-      Moroccan nūba.
-      One of the twelve Moroccan nūba is called Gharībat al-Ḥusayn.
+      <h2>Using the Time Unit Box System (TUBS) for North African Drumming</h2>
+      <h4>by Chris Hinstorff</h4>
+      <p>
+	TUBS is a notation designed to produce a rough structural sketch of percussion music, originally developed by Philip Harland and later James Koetting to notate drumming patterns of sub-saharan Africa.
 
-     The five movements of Gharībat al-Ḥusayn
+	Western music notation is not ideal for other musical traditions since it conveys additional context in its structures. For example, time signatures, eighth note barring, and bar lines can suggest specific things about stresses or beats that may not be present in other musical traditions.
+
+      </p>
+
+      <p>
+	TUBS is read from left to right, with each time-unit box representing an equal duration of time. Boxes contain symbols indicating the occurance of particular sounds. Symbols can leave sonority unspecified by simply being a dot or can represent characterized sonorities, such as "T" or "D" representing the sounds "takk" and "dumm". An empty box signifies that no sound occurs.
+      </p>
+      <table class="tubs" data-tubs-name="Uncharacterized sonorities" data-tubs-tempo=180>
+	<tbody>
+	  <tr data-tubs-name="" data-tubs-sequence=".-.-...-"></tr>
+	</tbody>
+      </table>
+      <table class="tubs" data-tubs-name="Dumms and takks" data-tubs-tempo=180>
+	<tbody>
+	  <tr data-tubs-name="" data-tubs-sequence="D-D-TTD-"></tr>
+	</tbody>
+      </table>
+
+      <br>
+
+      <p>
+	A line of TUBS can represent what is played by a specific instrument. If multiple instruments are playing at the same time, their lines of TUBS can be stacked vertically so that corresponding time-unit boxes line up with each other.
+      </p>
+      <table class="tubs" data-tubs-name="Specified instrument" data-tubs-tempo=180>
+	<tbody>
+	  <tr data-tubs-name="darbuka" data-tubs-sequence="D-D-TTD-"></tr>
+	</tbody>
+      </table>
+      <table class="tubs" data-tubs-name="Multiple instruments" data-tubs-tempo=180>
+	<tbody>
+	  <tr data-tubs-name="tar" data-tubs-sequence="DTD-T--T"></tr>
+	  <tr data-tubs-name="darbuka" data-tubs-sequence="D-D--TD-"></tr>
+	</tbody>
+      </table>
+      <p>
+	Note that while these examples have a tempo (boxes per minute, or bpm), TUBS at its most general is agnostic to tempo. A tempo has been provided in these examples since some tempo is required for playback. Note that 180bpm can also be thought of as each time-unit box representing one third of a second.
+      </p>
+
+      <h3>TUBS in North African Music</h3>
+      <p>
+	The rhythms of Arab Music of North Africa tend to be modal. That is:
+      </p>
+      <ol>
+	<li>Rhythms are named</li>
+	<li>Rhythms are cyclic</li>
+	<li>There are a finite number of rhythms</li>
+	<li>There are conventions for how a rhythm is played and varied</li>
+	<li>Each rhythm has a distinctive identity</li>
+      </ol>
+      <p>
+	The term for these rhythmic modes in North African Arabic is "mīzān" or "wazn". These rhythmic modes are defined by a skeleton of two sounds: "dumm" and "takk". Both of these sounds are capable of being produced by each of the traditional Arab percussion instruments, with the names of the sounds being roughly onomatopoeias of the two contrasting low ("dumm") and high ("takk") sounding strokes. 
+      </p>
+      <p>
+	Below are two examples of North African Arabic rhythmic modes, from Tunisia and Morocco, respectively.
+      </p>
+      <table class="tubs" data-tubs-name="dkhūl barwal" data-tubs-tempo=180>
+	<tbody>
+	  <tr data-tubs-name="" data-tubs-sequence="DD-T-TT-"></tr>
+	</tbody>
+      </table>
+      <table class="tubs" data-tubs-name="shaʿabī (maghrebī)" data-tubs-tempo=300>
+	<tbody>
+	  <tr data-tubs-name="" data-tubs-sequence="TTTTD-"></tr>
+	</tbody>
+      </table>
+      
+      <h3>Nūba</h3>
+      <p>
+	Andalusi music is the "classical" Arab music that originated as the music of al-Andalus, or Muslim Spain before the 15th century Christian reconquest of Spain. Muslims were expelled from the region and brought their music with them to North Africa and the larger Arab world. Throughout North Africa, Andalusi music retains high prestige and is taught in conservatories.
+      </p>
+      <p>
+	The repertoires of Andalusi music vary country to country and are organized into nūba, a large suite with rigid melodic and rhythmic structures. On example is Gharībat al-Ḥusayn, one of the twelve Moroccan nūba. Gharībat al-Ḥusayn contains five sections in order, each starting with in a slower rhythmic mode that gradually transitions to a different, faster rhythmic mode.
+      </p>
+      <p>
+	The rhythmic skeletons of the five movements of Gharībat al-Ḥusayn are listed below.
+      </p>
       <table class="nuba">
 	<tr>
-	  <td><table class="tubs" data-tubs-name="basit muwassa' (slow)" data-tubs-tempo=120>
+	  <td><table class="tubs" data-tubs-name="basit muwassa' (slow)" data-tubs-tempo=180>
 	      <tbody>
 		<tr data-tubs-name="tar"     data-tubs-sequence="D-D-T---D---"></tr>
 		<tr data-tubs-name="darbuka" data-tubs-sequence="D-D-TTT-D-T-"></tr>
@@ -40,7 +116,7 @@
 		<tr data-tubs-name="darbuka" data-tubs-sequence="T-T-D-TTT-D-D-T-"></tr>
 	      </tbody>
 	  </table></td>
-	  <td><table class="tubs" data-tubs-name="qa'im wanusf insiraf (fast)" data-tubs-tempo=300>
+	  <td><table class="tubs" data-tubs-name="qa'im wa-nusf insiraf (fast)" data-tubs-tempo=300>
 	      <tbody>
 		<tr data-tubs-name="tar"     data-tubs-sequence="T-T-D-DDT-D-DDT-"></tr>
 		<tr data-tubs-name="darbuka" data-tubs-sequence="T-T-D-TTT-D-D-T-"></tr>
@@ -87,6 +163,22 @@
 	  </table></td>
 	</tr>
       </table>
+
+      <h3>Shortcomings of TUBS for North African music</h3>
+      <p>
+	With North African Music, TUBS succeeds with what it was designed for: clearly showing rhythmic skeletons. TUBS does a great job of notating rhythmic mode, but does not attempt to notate any of the articulations that fill in the skeleton. Since North African drumming is composed of significantly more than just the rhythmic mode skeleton, TUBS can only succeed as a starting point for understanding the music and will fail to sufficiently teach the entire percussive tradition by itself.
+      </p>
+
+      <h3>References</h3>
+      <p>Grupe, Gerd "Notating African Music: Issues and Concepts." <i>The World of Music</i> 47(2) - 2005: 116-46.
+      </p>
+      <p>Jankowsky, Richard C. <i>Music in North Africa</i>. Unpublished.
+      </p>
+      <p>Koetting, James "Analysis and Notation of West African Drum Ensemble Music." <i>Selected Reports in Ethnomusicology</i> 1(3) - 1970: 116-46.
+      </p>
+      <p>
+	Code for this site is available at <a href="https://github.com/chinstorff/tubs/">https://github.com/chinstorff/tubs/</a>.
+      </p>
     </div>
     <script src="./tubs.js"></script>
   </body>

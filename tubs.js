@@ -107,13 +107,14 @@ var TubsTable = function (tableNode, sequence, tempo) {
 		    "D": 57,
 		    "T": 58,
 		    "-": 0,
+		    ".": 57,
 		}
 		var darbuka = {
 		    "D": 60,
 		    "T": 61,
 		    "-": 0,
 		}
-		if (this.name == "tar") return tar[c];
+		if (this.name != "darbuka") return tar[c];
 		return darbuka[c];
 	    },
 	    highlightIndex: function (i) {
@@ -130,7 +131,10 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	trNode.appendChild(voiceNameNode);
 	for (var i = 0; i < tubsVoice.sequence.length; i++) {
 	    var tdNode = document.createElement("TD");
-	    tdNode.innerHTML = tubsVoice.sequence[i];
+	    var symbol = tubsVoice.sequence[i];
+	    if (symbol == "-") symbol = "";
+	    if (symbol == ".") symbol = "●";
+	    tdNode.innerHTML = symbol;
 	    tubsVoice.TDs.push(tdNode);
 	    trNode.appendChild(tdNode);
 	}
