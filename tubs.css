@@ -1,16 +1,17 @@
+@font-face {
+    font-family: KepatihanPro;
+    src: url('assets/kepatihan_pro.ttf');
+} 
+
 .tubs {
     border-collapse: collapse;
 }
 
 .tubs td {
-    border: 2px solid black;
-    padding: 5px;
-    height: 20px;
-    width: 20px;
-}
-
-.tubs button {
-    margin-top: 5px;
+/*    border: 2px solid #888888; */
+/*    padding: 5px; */
+/*    height: 20px; */
+/*    width: 20px; */
 }
 
 .highlighted {
@@ -19,7 +20,7 @@
 
 .tubs tr span {
     margin-right: 7px;
-    margin-top: 8px;
+    margin-top: 15px;
     float: right;
 }
 
@@ -32,11 +33,12 @@
 .tubs-div h3 {
     margin: 2px 5px 4px 10px;
     font-size: medium;
+    color: #777777;
     display: inline;
     float: right;
 }
 
-.tubs-div button {
+.tubs-div div button {
     margin-top: -5px;
     float: right;
 }
@@ -89,4 +91,28 @@
 .content ol {
     margin-top: 3px;
     margin-bottom: -10px;
+}
+
+.gamelan td {
+    font-family: KepatihanPro;
+    width: .5em;
+}
+
+.kembangan td:nth-child(8n+1) {
+    padding-left: 1.5em;
+}
+
+.kembangan {
+    margin-top: -19px;
+    margin-bottom: -7px;
+}
+
+.tubs-group {
+    margin-bottom: 10px;
+    vertical-align: top;
+    display: inline-block;
+}
+.tubs-group .tubs-div {
+    display: block;
+    margin-bottom: 5px;
 }

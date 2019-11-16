@@ -3,7 +3,6 @@ urlParams = new URLSearchParams(window.location.search);
 var urlSequence = null;
 var urlTempo = null;
 if (urlParams != null) {
-    console.log(urlParams);
     urlSequence = urlParams.has('sequence') ? urlParams.get('sequence').toUpperCase() : undefined;
     urlTempo = urlParams.has('tempo') ? urlParams.get('tempo') : undefined;
 }
@@ -19,9 +18,12 @@ PAUSE_SYMBOL = "&#9208;";
 var TubsTable = function (tableNode, sequence, tempo) {
     var tt = {
 	active: false,
-	name: tableNode.getAttribute("data-tubs-name") || "Untitled",
+	singleVoice: tableNode.hasAttribute("data-tubs-single-voice") || false,
+	name: tableNode.getAttribute("data-tubs-name"),
 	voices: [],
 	tempo: tempo || tableNode.getAttribute("data-tubs-tempo") || urlTempo || 60, // bpm
+	shouldRepeat: !tableNode.hasAttribute("data-tubs-no-repeat"),
+	defaultVoiceName: tableNode.getAttribute("data-tubs-default-voice-name"),
 	sequenceLength: 0,
 	tableNode: tableNode,
 	playButtonNode: document.createElement("BUTTON"),
@@ -34,6 +36,13 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	    for (var j = 0; j < this.voices.length; j++) {
 		this.voices[j].TDs[i].classList.remove("highlighted");
 	    }	    
+	},
+	playNote: function (voice, i, sleepDuration, delay, velocity) {
+	    var note = voice.getNoteId(voice.sequence[i]);
+	    MIDI.noteOn(0, note, velocity, delay);
+	    MIDI.noteOff(0, note, delay + 0.75);
+	    
+	    voice.highlightIndex(i);
 	},
 	play: async function () {
 	    this.active = true;
@@ -51,23 +60,39 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	    }
 	    
 	    await sleep(500);
-	    console.log(this.voices);
-	    var i = 0;
-	    while (this.active) {
-		for (var j = 0; j < this.voices.length; j++) {
-		    var voice = this.voices[j];
+	    var i = this.tableNode.hasAttribute("data-tubs-start-at-end") ? this.voices[0].sequence.length-1 : 0;
+
+	    if (this.singleVoice) {
+		var currentVoiceIndex = this.tableNode.hasAttribute("data-tubs-start-at-end") ? this.voices.length-1 : 0;
+		while (this.active) {
+		    this.playNote(this.voices[currentVoiceIndex], i, sleepDuration, delay, velocity);
+		    await sleep(sleepDuration);
+		    this.unHighlightIndex(i);
 		    
-		    var note = voice.getNoteId(voice.sequence[i]);
-		    console.log(voice.name + " plays a " + note);
-		    MIDI.noteOn(0, note, velocity, delay);
-		    MIDI.noteOff(0, note, delay + 0.75);
-		
-		    voice.highlightIndex(i);
+		    i += 1;
+		    if (i >= this.voices[currentVoiceIndex].sequence.length) {
+			i = 0;
+			currentVoiceIndex = (currentVoiceIndex + 1) % this.voices.length;
+			if (this.shouldRepeat) {
+			    this.stop();
+			}
+		    }
 		}
-		await sleep(sleepDuration);
-		this.unHighlightIndex(i);
-		i = (i+1) % this.sequenceLength;
-	    }	    
+	    } else {
+		while (this.active) {
+		    for (var j = 0; j < this.voices.length; j++) {
+			this.playNote(this.voices[j], i, sleepDuration, delay, velocity);
+		    }
+		    await sleep(sleepDuration);
+		    this.unHighlightIndex(i);
+		    i++;
+		    if (i == this.sequenceLength) {
+			i = 0;
+			if (!this.shouldRepeat) this.stop();
+		    }
+		    
+		}
+	    }
 	},
 	stop: function () {
 	    this.active = false;
@@ -98,24 +123,86 @@ var TubsTable = function (tableNode, sequence, tempo) {
     for (var j = 0; j < trNodes.length; j++) {
 	var trNode = trNodes[j];
 	var tubsVoice = {
-	    name: trNode.getAttribute("data-tubs-name"),
+	    displayName: trNode.getAttribute("data-tubs-name"),
+	    name: trNode.getAttribute("data-tubs-name") || tt.defaultVoiceName,
 	    sequence: trNode.getAttribute("data-tubs-sequence"),
 	    TDs: [],
 	    highlightedIndex: 0,
 	    getNoteId: function (c) {
-		var tar = {
-		    "D": 57,
-		    "T": 58,
-		    "-": 0,
-		    ".": 57,
+		var instruments = {
+		    "tar": {
+			"D": 57,
+			"T": 58,
+			"-": 0,
+			".": 57,
+		    },
+		    "darbuka": {
+			"D": 60,
+			"T": 61,
+			"-": 0,
+		    },		    
+		    "bonang": {
+			"q": 49,
+			"w": 50,
+			"e": 51,
+			"r": 52,
+			"t": 53,
+			"y": 54,
+			"u": 55,
+			"1": 56,
+			"2": 57,
+			"3": 58,
+			"4": 59,
+			"5": 60,
+			"6": 61,
+			"7": 62,
+		    },
+		    "slenthem": {
+			"1": 21,
+			"2": 22,
+			"3": 23,
+			"4": 24,
+			"5": 25,
+			"6": 26,
+			"7": 27,
+		    },
+		    "demung": {
+			"1": 28,
+			"2": 29,
+			"3": 30,
+			"4": 31,
+			"5": 32,
+			"6": 33,
+			"7": 34,
+		    },
+		    "saron": {
+			"1": 35,
+			"2": 36,
+			"3": 37,
+			"4": 38,
+			"5": 39,
+			"6": 40,
+			"7": 41,
+		    },
+		    "peking": {
+			"1": 42,
+			"2": 43,
+			"3": 44,
+			"4": 45,
+			"5": 46,
+			"6": 47,
+			"7": 48,
+		    },
+		    "kendhang": {
+			"C": 77,
+			"P": 78,
+			".": 79,
+			"-": 80,
+			"I": 81,
+		    },
 		}
-		var darbuka = {
-		    "D": 60,
-		    "T": 61,
-		    "-": 0,
-		}
-		if (this.name != "darbuka") return tar[c];
-		return darbuka[c];
+		if (this.name in instruments) return instruments[this.name][c];
+		return 0;
 	    },
 	    highlightIndex: function (i) {
 		this.TDs[i].classList.add("highlighted");
@@ -127,13 +214,15 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	}
 
 	var voiceNameNode = document.createElement("SPAN");
-	voiceNameNode.innerHTML = tubsVoice.name;
+	voiceNameNode.innerHTML = tubsVoice.displayName;
 	trNode.appendChild(voiceNameNode);
+
+	console.log(tubsVoice);
 	for (var i = 0; i < tubsVoice.sequence.length; i++) {
 	    var tdNode = document.createElement("TD");
 	    var symbol = tubsVoice.sequence[i];
 	    if (symbol == "-") symbol = "";
-	    if (symbol == ".") symbol = "●";
+//	    if (symbol == ".") symbol = "●";
 	    tdNode.innerHTML = symbol;
 	    tubsVoice.TDs.push(tdNode);
 	    trNode.appendChild(tdNode);
@@ -146,14 +235,22 @@ var TubsTable = function (tableNode, sequence, tempo) {
     var tempoNode = document.createElement("H3");
     titleNode.innerText = tt.name;
     tempoNode.innerText = tt.tempo + "bpm";
-    headerDiv.appendChild(titleNode);
-    headerDiv.appendChild(tt.playButtonNode);
-    headerDiv.appendChild(tempoNode);
+    if (tt.name) {
+	headerDiv.appendChild(titleNode);
+	headerDiv.appendChild(tt.playButtonNode);
+    }
+//  headerDiv.appendChild(tempoNode);
     
     var tableDiv = document.createElement("DIV");
     tableDiv.classList.add("tubs-div");
-    tableDiv.appendChild(headerDiv);
+    tableDiv.onclick = tt.playButtonNode.onclick;
+    if (tt.name) {
+	tableDiv.appendChild(headerDiv);
+    }
+
+    
     tt.tableNode.parentNode.insertBefore(tableDiv, tt.tableNode);
+
     tableDiv.appendChild(tt.tableNode);
 
     return tt;
@@ -171,7 +268,7 @@ function startMidi() {
 	//	instrument: "synth_drum",
 	targetFormat: 'mp3',
 	onprogress: function(state, progress) {
-	    console.log(state, progress);
+//	    console.log(state, progress);
 	},
 	onsuccess: function() {
 	    MIDI.setVolume(0, 127);
