@@ -83,16 +83,6 @@ var TubsTable = function (tableNode, sequence, tempo) {
 	}
     }
     tt.playButtonNode.innerHTML = PLAY_SYMBOL;
-    tt.playButtonNode.onclick = function () {
-	if (tt.active) {
-	    tt.stop();
-	} else {
-	    for (var i = 0; i < tubsTables.length; i++) {
-		tubsTables[i].reset();
-	    }
-	    tt.play();
-	}
-    }
     var trNodes = tableNode.children[0].children;
     
     for (var j = 0; j < trNodes.length; j++) {
@@ -155,6 +145,20 @@ var TubsTable = function (tableNode, sequence, tempo) {
     tableDiv.appendChild(headerDiv);
     tt.tableNode.parentNode.insertBefore(tableDiv, tt.tableNode);
     tableDiv.appendChild(tt.tableNode);
+    tableDiv.onclick = function () {
+	console.log("hello")
+	MIDI.WebAudio.getContext().resume().then(() => {
+	    console.log("world")
+	    if (tt.active) {
+		tt.stop();
+	    } else {
+		for (var i = 0; i < tubsTables.length; i++) {
+		    tubsTables[i].reset();
+		}
+		tt.play();
+	    }
+	});
+    };
 
     return tt;
 }
