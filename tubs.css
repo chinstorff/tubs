@@ -1,7 +1,7 @@
 @font-face {
     font-family: KepatihanPro;
     src: url('assets/kepatihan_pro.ttf');
-} 
+}
 
 .tubs {
     border-collapse: collapse;
@@ -96,6 +96,10 @@
 .gamelan td {
     font-family: KepatihanPro;
     width: .5em;
+}
+
+.kepatihan {
+  font-family: KepatihanPro;
 }
 
 .kembangan td:nth-child(8n+1) {

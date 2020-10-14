@@ -6,6 +6,19 @@ const Octaves = Object.freeze({
   LOW:    { name: "Low",    short: "l" }
 });
 
+const Pathets = Object.freeze({
+  PELOG_LIMA:      { name: "",   short: "", laras: "pelog", pathet: "lima" },
+  PELOG_NEM:       { name: "",   short: "", laras: "pelog", pathet: "nem"  },
+  PELOG_BARANG:    { name: "",   short: "", laras: "pelog", pathet: "barang"  },
+  SLENDRO_SANGA:   { name: "",   short: "", laras: "slendro", pathet: "sanga"  },
+  SLENDRO_NEM:     { name: "",   short: "", laras: "slendro", pathet: "nem"  },
+  SLENDRO_MANYURA: { name: "",   short: "", laras: "slendro", pathet: "manyura"  },
+});
+
+const Styles = Object.freeze({
+  KETAWANG:   { name: "ketawang" },
+});
+
 class Note {
   constructor(pitch, octave) {
     this.pitch = pitch;
@@ -18,6 +31,10 @@ class Note {
 
   setOctave(octave) {
     this.octave = octave;
+  }
+
+  setDouble(note) {
+    this.double = note;
   }
 
   addGong() {
@@ -49,6 +66,8 @@ class Note {
 
     if (this.gong) {
       note += "g";
+    } else if (this.kempul) {
+      note += "p";
     } else if (this.kanong) {
       note += "n";
     }
@@ -68,9 +87,12 @@ class Note {
 }
 
 class Section {
-  constructor(name) {
+  constructor(name, noteString) {
     this.name = name;
     this.notes = [];
+    if (noteString) {
+      this.addNoteString(noteString);
+    }
   }
 
   addNote(note) {
@@ -143,32 +165,41 @@ class Section {
   }
 }
 
-let s = new Section();
-s.addNoteString("2126l 2523n 5321p 3216lg");
-console.log(s.toNoteString());
-console.log(s.toKepatihan());
-/*
-class Piece {
-  // ..and an (optional) custom class constructor. If one is
-  // not supplied, a default constructor is used instead:
-  // constructor() {
-  constructor(style, name, laras, pathet) {
+class Suite {
+  constructor(style, name, pathet) {
     this.style = style;
     this.name = name;
-    this.laras = laras;
     this.pathet = pathet;
+    this.sections = [];
   }
 
-  // Simple class instance methods using short-hand method
-  // declaration
-  sayName() {
-    ChromeSamples.log('Hi, I am a ', this.name + '.');
+  render() {
+    let suite = document.getElementById("suite");
+    suite.innerHTML += "<p>" + this.getTitleHTML() + "</p>"
+    suite.innerHTML += "<p class='kepatihan'>" + this.sections[0].toKepatihan() + "</p>";
   }
 
-  sayHistory() {
-    ChromeSamples.log('"Polygon" is derived from the Greek polus (many) ' +
-      'and gonia (angle).');
+  getTitleHTML() {
+    let capitalize = (s) => {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    let titleHTML = ""
+    titleHTML += capitalize(this.style.name) + " "
+    titleHTML += "<strong>" + capitalize(this.name) + "</strong>, ";
+    titleHTML += "laras " + this.pathet.laras + " pathet " + this.pathet.pathet + " ";
+    return titleHTML;
   }
 
-  // We will look at static and subclassed methods shortly
-}*/
+  getSectionHTML(section) {
+    section.toKepatihan();
+  }
+
+  addSection(section) {
+    this.sections.push(section);
+  }
+}
+
+let suite = new Suite(Styles.KETAWANG, "Madumurti", Pathets.SLENDRO_MANYURA);
+suite.addSection(new Section("Ompak", "2126l 2523n 5321p 3216lg"));
+suite.render();
